@@ -1,7 +1,20 @@
 ﻿//
 // Simple Blackjack Game from Scrimba JavaScript Tutorial
-// Updated: 04/24/2025
+// Updated: 07/28/2025
 //
+
+const card_data = [
+    { "number": 2, "path": "images/snoopy_2.png" },
+    { "number": 3, "path": "images/snoopy_3.png" },
+    { "number": 4, "path": "images/snoopy_4.png" }, 
+    { "number": 5, "path": "images/snoopy_5.png" }, 
+    { "number": 6, "path": "images/snoopy_6.png" },
+    { "number": 7, "path": "images/snoopy_card.png" },
+    { "number": 8, "path": "images/snoopy_card.png" },
+    { "number": 9, "path": "images/snoopy_card.png" },
+    { "number": 10, "path": "images/snoopy_card.png" },
+    { "number": 11, "path": "images/snoopy_card.png" }
+]
 
 let cards = []
 let sum = 0
@@ -12,6 +25,7 @@ let message = ""
 let messageEl = document.getElementById("message-el")
 let sumEl = document.querySelector("#sum-el")
 let cardsEl = document.getElementById("cards-el")
+const cardImgsEl = document.getElementById("card_imgs")
 
 function getRandomCard() {
     let randomNum = Math.floor( Math.random() * 13 ) + 1
@@ -35,28 +49,49 @@ function startGame() {
     isAlive = true
     sum = 0
     message = ""
+    resetGame()
 
     let firstCard = getRandomCard()
     cards = []
     cards.push(firstCard)
 
-    sum += firstCard
-
-    renderGame();
+    //renderGame(newSum, newCardValue);
+    updateBoard(firstCard)
 }
 
-function renderGame() {
+function resetGame() {
+    sumEl.textContent = "Sum: " + sum
+    cardsEl.textContent = ""
+
+    while (cardImgsEl.hasChildNodes()) {
+        cardImgsEl.removeChild(cardImgsEl.firstChild)
+    }
+}
+
+function renderGame_() {
     sumEl.textContent = "Sum: " + sum
     cardsEl.textContent = ""
 
     for (let i = 0; i < cards.length; i++) {
         cardsEl.textContent += cards[i] + " "
     }
+    //displayCards()
+}
 
-    if (sum <= 20) {
+function updateBoard(newCardValue) {
+    sum += newCardValue
+    sumEl.textContent = `Sum: ${sum}`
+    cardsEl.textContent += newCardValue + " "
+
+    displayCard(newCardValue)
+    updateMessage(sum)
+}
+
+function updateMessage(newSum) {
+    if (newSum <= 20) {
         message = "Do you want to draw a new card?"
 
-    } else if (sum === 21) {
+    } else if (newSum === 21) {
         message = "You've got Blackjack!"
         hasBlackJack = true
 
@@ -72,12 +107,34 @@ function newCard() {
     if(isAlive && hasBlackJack === false)
     {
         let card = getRandomCard()
-        sum += card
-
         cards.push(card)
         console.log(cards)
 
-        renderGame()
+        updateBoard(card)
+    }
+}
+
+function findCardPath(cardNumber) {
+    for(let i = 0; i < card_data.length; i++) {
+        if( card_data[i].number === cardNumber ) {
+            console.log("found")
+            return card_data[i].path
+        }
+    }
+    return ""
+}
+
+function displayCard(cardNumber) {
+    const cardPath = findCardPath(cardNumber)
+
+    if(cardPath){
+        console.log(`cardpath is:: ${cardPath}`)
+        let img = document.createElement("img")
+        img.src = cardPath
+        img.alt = `card with value ${cardNumber}`
+        img.width = 150
+
+        cardImgsEl.appendChild(img)
     }
 }
 
