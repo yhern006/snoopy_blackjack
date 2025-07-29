@@ -9,10 +9,10 @@ const card_data = [
     { "number": 4, "path": "images/snoopy_4.png" }, 
     { "number": 5, "path": "images/snoopy_5.png" }, 
     { "number": 6, "path": "images/snoopy_6.png" },
-    { "number": 7, "path": "images/snoopy_card.png" },
+    { "number": 7, "path": "images/snoopy_7.png" },
     { "number": 8, "path": "images/snoopy_card.png" },
-    { "number": 9, "path": "images/snoopy_card.png" },
-    { "number": 10, "path": "images/snoopy_card.png" },
+    { "number": 9, "path": "images/snoopy_9.png" },
+    { "number": 10, "path": "images/snoopy_10.png" },
     { "number": 11, "path": "images/snoopy_card.png" }
 ]
 
@@ -60,7 +60,7 @@ function startGame() {
 }
 
 function resetGame() {
-    sumEl.textContent = "Sum: " + sum
+    sumEl.textContent = `Sum: ${sum}`
     cardsEl.textContent = ""
 
     while (cardImgsEl.hasChildNodes()) {
@@ -69,11 +69,11 @@ function resetGame() {
 }
 
 function renderGame_() {
-    sumEl.textContent = "Sum: " + sum
+    sumEl.textContent = `Sum: ${sum}`
     cardsEl.textContent = ""
 
     for (let i = 0; i < cards.length; i++) {
-        cardsEl.textContent += cards[i] + " "
+        cardsEl.textContent += `${cards[i]} `
     }
     //displayCards()
 }
@@ -81,7 +81,7 @@ function renderGame_() {
 function updateBoard(newCardValue) {
     sum += newCardValue
     sumEl.textContent = `Sum: ${sum}`
-    cardsEl.textContent += newCardValue + " "
+    cardsEl.textContent += `${newCardValue} `
 
     displayCard(newCardValue)
     updateMessage(sum)
