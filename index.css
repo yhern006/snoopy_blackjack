@@ -48,8 +48,13 @@ button{
 }
 
 button:hover {
-    background-color: blueviolet;
-    color: darkkhaki
+    background-color: crimson;
+    color: whitesmoke;
+}
+
+button:disabled {
+    background-color: darkgray;
+    color: whitesmoke;
 }
 
 .card-img {

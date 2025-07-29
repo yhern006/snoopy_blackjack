@@ -26,6 +26,8 @@ const messageEl = document.getElementById("message-el")
 const sumEl = document.querySelector("#sum-el")
 const cardsEl = document.getElementById("cards-el")
 const cardImgsEl = document.getElementById("card_imgs")
+const startGameBtn = document.getElementById("start-btn")
+const newCardBtn = document.getElementById("newcard-btn")
 
 function getRandomCard() {
     let randomNum = Math.floor( Math.random() * 13 ) + 1
@@ -44,7 +46,7 @@ function getRandomCard() {
     else return randomNum
 }
 
-function startGame() {
+startGameBtn.addEventListener("click", function () {
     hasBlackJack = false
     isAlive = true
     sum = 0
@@ -57,11 +59,12 @@ function startGame() {
 
     //renderGame(newSum, newCardValue);
     updateBoard(firstCard)
-}
+})
 
 function resetGame() {
     sumEl.textContent = `Sum: ${sum}`
     cardsEl.textContent = ""
+    newCardBtn.disabled = false
 
     while (cardImgsEl.hasChildNodes()) {
         cardImgsEl.removeChild(cardImgsEl.firstChild)
@@ -94,17 +97,23 @@ function updateMessage(newSum) {
     } else if (newSum === 21) {
         message = "You've got Blackjack!"
         hasBlackJack = true
+        disableNewCardBtn()
 
     } else {
         message = "You're out of the game!"
         isAlive = false
+        disableNewCardBtn()
     }
 
     messageEl.textContent = message
 }
 
-function newCard() {
-    if(isAlive && hasBlackJack === false)
+function disableNewCardBtn() {
+    newCardBtn.disabled = true
+}
+
+newCardBtn.addEventListener("click", function () {
+    if(!newCardBtn.disabled)
     {
         const card = getRandomCard()
         cards.push(card)
@@ -112,7 +121,7 @@ function newCard() {
 
         updateBoard(card)
     }
-}
+})
 
 function findCardPath(cardNumber) {
     for(let i = 0; i < card_data.length; i++) {
