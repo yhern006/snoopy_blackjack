@@ -1,12 +1,11 @@
 ﻿
 body{
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-   /* background-image: url(./images/joecoolbg_purple.png);
+    background-image: url(./images/felt_table.png);
     background-size: cover;
     background-position: center;
-    background-repeat: no-repeat;*/
-    background-color: #D81159;
-    width: 600px;
+    background-repeat: no-repeat;
+    width: 750px;
     margin: auto;
     color: whitesmoke;
     font-size: 2vw;
@@ -17,11 +16,12 @@ body{
 
 .container {
     border: 2px solid whitesmoke;
+    background-color: darkgreen;
 }
 
 h1{
     color: whitesmoke;
-    font-size: 4vw;
+    font-size: 22px;
     margin: 10px;
     background-color: #0c8810;
     border-radius: 1px;
@@ -29,7 +29,7 @@ h1{
 }
 
 p {
-    font-size: 2vw;
+    font-size: 17px;
 }
 
 #message-el{
@@ -37,7 +37,7 @@ p {
 }
 
 button{
-    font-size: 18px;
+    font-size: 16px;
     font-weight: bold;
     color: white;
     padding: 10px;
@@ -50,4 +50,8 @@ button{
 button:hover {
     background-color: blueviolet;
     color: darkkhaki
+}
+
+.card-img {
+    max-width: 150px;
 }

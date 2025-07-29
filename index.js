@@ -22,9 +22,9 @@ let hasBlackJack = false
 let isAlive = false
 let message = ""
 
-let messageEl = document.getElementById("message-el")
-let sumEl = document.querySelector("#sum-el")
-let cardsEl = document.getElementById("cards-el")
+const messageEl = document.getElementById("message-el")
+const sumEl = document.querySelector("#sum-el")
+const cardsEl = document.getElementById("cards-el")
 const cardImgsEl = document.getElementById("card_imgs")
 
 function getRandomCard() {
@@ -106,7 +106,7 @@ function updateMessage(newSum) {
 function newCard() {
     if(isAlive && hasBlackJack === false)
     {
-        let card = getRandomCard()
+        const card = getRandomCard()
         cards.push(card)
         console.log(cards)
 
@@ -132,8 +132,8 @@ function displayCard(cardNumber) {
         let img = document.createElement("img")
         img.src = cardPath
         img.alt = `card with value ${cardNumber}`
-        img.width = 150
-
+        img.classList.add('card-img')
+        
         cardImgsEl.appendChild(img)
     }
 }
