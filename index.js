@@ -1,6 +1,6 @@
 ﻿//
 // Simple Blackjack Game from Scrimba JavaScript Tutorial
-// Updated: 07/28/2025
+// Updated: 07/30/2025
 //
 
 const card_data = [
