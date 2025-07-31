@@ -16,10 +16,12 @@ const card_data = [
     { "number": 11, "path": "images/snoopy_11.png" }
 ]
 
-let cards = []
-let sum = 0
-let hasBlackJack = false
-let isAlive = false
+const players = [
+    {"player": "dealer", "sum": 0, "busted": false, "cards": []},
+    {"player": "user", "sum": 0, "busted": false, "cards": []}
+]
+
+let gameOn = false
 let message = ""
 
 const messageEl = document.getElementById("message-el")
@@ -28,6 +30,10 @@ const cardsEl = document.getElementById("cards-el")
 const cardImgsEl = document.getElementById("card_imgs")
 const startGameBtn = document.getElementById("start-btn")
 const newCardBtn = document.getElementById("newcard-btn")
+
+const dealerSumEl = document.getElementById("dealer-sum-el")
+const dealerCardsEl = document.getElementById("dealer-cards")
+const dealerCardImgsEl = document.getElementById("dealer_card_imgs")
 
 function getRandomCard() {
     let randomNum = Math.floor( Math.random() * 13 ) + 1
@@ -47,23 +53,22 @@ function getRandomCard() {
 }
 
 startGameBtn.addEventListener("click", function () {
-    hasBlackJack = false
-    isAlive = true
-    sum = 0
+    gameOn = true
     message = ""
     resetGame()
+    mainGame()
 
-    let firstCard = getRandomCard()
-    cards = []
-    cards.push(firstCard)
-
-    //renderGame(newSum, newCardValue);
     updateBoard(firstCard)
 })
 
 function resetGame() {
-    sumEl.textContent = `Sum: ${sum}`
+    players[0].sum = 0
+    players[1].sum = 0
+
+    sumEl.textContent = `Sum: ${players[0].sum}`
+    dealerSumEl.textContent = `Sum: ${players[1].sum}`
     cardsEl.textContent = ""
+    dealerCardsEl.textContent = ""
     newCardBtn.disabled = false
 
     while (cardImgsEl.hasChildNodes()) {
@@ -81,13 +86,41 @@ function renderGame_() {
     //displayCards()
 }
 
-function updateBoard(newCardValue) {
-    sum += newCardValue
-    sumEl.textContent = `Sum: ${sum}`
-    cardsEl.textContent += `${newCardValue} `
+function mainGame() {
+    if(gameOn) {
+        if( !players[1].busted ) {
+            playerMove(1)
+            updateBusting(1)
+            sumEl.textContent = `Sum: ${players[1].sum}`
+        }
+        
+        if( !players[0].busted ) {
+            playerMove(0)
+            updateBusting(0)
+            dealerSumEl.textContent = `Sum: ${players[0].sum}`
+        }
 
+        if( players[1].busted && players[0].busted ) {
+            gameOn = false
+            disableNewCardBtn() 
+        }
+    }
+}
+
+function playerMove(playerIndex) {
+    const newCard = getRandomCard()
+    players[playerIndex].cards.push(newCard)
+    players[playerIndex].sum += newCard
+}
+
+function updateBusting(playerIndex) {
+    if( players[playerIndex].sum >= 21 )
+        players[playerIndex].busted = true
+}
+
+function updateBoard(newCardValue) {
     displayCard(newCardValue)
-    updateMessage(sum)
+    updateMessage(players[1].sum)
 }
 
 function updateMessage(newSum) {
@@ -113,7 +146,7 @@ function disableNewCardBtn() {
 }
 
 newCardBtn.addEventListener("click", function () {
-    if(!newCardBtn.disabled)
+    if(gameOn)
     {
         const card = getRandomCard()
         cards.push(card)
