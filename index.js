@@ -10,10 +10,10 @@ const card_data = [
     { "number": 5, "path": "images/snoopy_5.png" }, 
     { "number": 6, "path": "images/snoopy_6.png" },
     { "number": 7, "path": "images/snoopy_7.png" },
-    { "number": 8, "path": "images/snoopy_card.png" },
+    { "number": 8, "path": "images/snoopy_8.png" },
     { "number": 9, "path": "images/snoopy_9.png" },
     { "number": 10, "path": "images/snoopy_10.png" },
-    { "number": 11, "path": "images/snoopy_card.png" }
+    { "number": 11, "path": "images/snoopy_11.png" }
 ]
 
 let cards = []
