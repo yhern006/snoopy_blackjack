@@ -28,6 +28,7 @@ const messageEl = document.getElementById("message-el")
 const sumEl = document.querySelector("#sum-el")
 const cardsEl = document.getElementById("cards-el")
 const cardImgsEl = document.getElementById("card_imgs")
+
 const startGameBtn = document.getElementById("start-btn")
 const newCardBtn = document.getElementById("newcard-btn")
 
@@ -54,50 +55,51 @@ function getRandomCard() {
 
 startGameBtn.addEventListener("click", function () {
     gameOn = true
-    message = ""
     resetGame()
     mainGame()
-
-    updateBoard(firstCard)
 })
 
 function resetGame() {
-    players[0].sum = 0
-    players[1].sum = 0
+    resetPlayers()
 
     sumEl.textContent = `Sum: ${players[0].sum}`
     dealerSumEl.textContent = `Sum: ${players[1].sum}`
     cardsEl.textContent = ""
     dealerCardsEl.textContent = ""
     newCardBtn.disabled = false
+    message = ""
 
     while (cardImgsEl.hasChildNodes()) {
         cardImgsEl.removeChild(cardImgsEl.firstChild)
     }
+    while (dealerCardImgsEl.hasChildNodes())
+        dealerCardImgsEl.removeChild(dealerCardImgsEl.firstChild)
 }
 
-function renderGame_() {
-    sumEl.textContent = `Sum: ${sum}`
-    cardsEl.textContent = ""
+function resetPlayers() {
+    players[0].sum = 0
+    players[0].busted = false
+    players[0].cards = []
 
-    for (let i = 0; i < cards.length; i++) {
-        cardsEl.textContent += `${cards[i]} `
-    }
-    //displayCards()
+    players[1].sum = 0
+    players[1].busted = false
+    players[1].cards = []
 }
 
 function mainGame() {
     if(gameOn) {
         if( !players[1].busted ) {
-            playerMove(1)
+            let playerCard = playerMove(1)
             updateBusting(1)
             sumEl.textContent = `Sum: ${players[1].sum}`
+            displayCard(1, playerCard)
         }
         
         if( !players[0].busted ) {
-            playerMove(0)
+            let dealerCard = playerMove(0)
             updateBusting(0)
             dealerSumEl.textContent = `Sum: ${players[0].sum}`
+            displayCard(0, dealerCard)
         }
 
         if( players[1].busted && players[0].busted ) {
@@ -111,6 +113,8 @@ function playerMove(playerIndex) {
     const newCard = getRandomCard()
     players[playerIndex].cards.push(newCard)
     players[playerIndex].sum += newCard
+
+    return newCard
 }
 
 function updateBusting(playerIndex) {
@@ -123,18 +127,17 @@ function updateBoard(newCardValue) {
     updateMessage(players[1].sum)
 }
 
-function updateMessage(newSum) {
-    if (newSum <= 20) {
+function updateMessage() {
+    if (players[1].sum < 21) {
         message = "Do you want to draw a new card?"
 
-    } else if (newSum === 21) {
+    } else if (players[1].sum === 21) {
         message = "You've got Blackjack!"
-        hasBlackJack = true
+        gameOn = false
         disableNewCardBtn()
 
     } else {
         message = "You're out of the game!"
-        isAlive = false
         disableNewCardBtn()
     }
 
@@ -146,14 +149,7 @@ function disableNewCardBtn() {
 }
 
 newCardBtn.addEventListener("click", function () {
-    if(gameOn)
-    {
-        const card = getRandomCard()
-        cards.push(card)
-        console.log(cards)
-
-        updateBoard(card)
-    }
+    mainGame()
 })
 
 function findCardPath(cardNumber) {
@@ -166,17 +162,21 @@ function findCardPath(cardNumber) {
     return ""
 }
 
-function displayCard(cardNumber) {
+function displayCard(playerIndex, cardNumber) {
     const cardPath = findCardPath(cardNumber)
 
     if(cardPath){
         console.log(`cardpath is:: ${cardPath}`)
-        let img = document.createElement("img")
+        const img = document.createElement("img")
         img.src = cardPath
         img.alt = `card with value ${cardNumber}`
         img.classList.add('card-img')
         
-        cardImgsEl.appendChild(img)
+        if(playerIndex === 0)    // dealer
+            dealerCardImgsEl.appendChild(img)
+        else        // user
+            cardImgsEl.appendChild(img)
+
     }
 }
 
