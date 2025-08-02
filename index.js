@@ -1,6 +1,6 @@
 ﻿//
 // Simple Blackjack Game from Scrimba JavaScript Tutorial
-// Updated: 07/30/2025
+// Updated: 08/01/2025
 //
 
 const card_data = [
@@ -17,8 +17,8 @@ const card_data = [
 ]
 
 const players = [
-    {"player": "dealer", "sum": 0, "busted": false, "cards": []},
-    {"player": "user", "sum": 0, "busted": false, "cards": []}
+    {"player": "dealer", "sum": 0, "inPlay": false, "busted": false, "cards": []},
+    {"player": "user", "sum": 0, "inPlay": false, "busted": false, "cards": []}
 ]
 
 let gameOn = false
@@ -31,6 +31,7 @@ const cardImgsEl = document.getElementById("card_imgs")
 
 const startGameBtn = document.getElementById("start-btn")
 const newCardBtn = document.getElementById("newcard-btn")
+const hitBtn = document.getElementById("hit-btn")
 
 const dealerSumEl = document.getElementById("dealer-sum-el")
 const dealerCardsEl = document.getElementById("dealer-cards")
@@ -38,16 +39,11 @@ const dealerCardImgsEl = document.getElementById("dealer_card_imgs")
 
 function getRandomCard() {
     let randomNum = Math.floor( Math.random() * 13 ) + 1
-    console.log(randomNum)
 
     if (randomNum === 1) {
-        console.log(randomNum)
-        console.log("returning 11")
         return 11
     }
     else if (randomNum >= 11) {
-        console.log(randomNum)
-        console.log("returning 10")
         return 10
     }
     else return randomNum
@@ -61,14 +57,33 @@ startGameBtn.addEventListener("click", function () {
 
 function resetGame() {
     resetPlayers()
+    resetTextContent()
+    disableBtns(false)
+    message = ""
+    resetCardImgs()
 
+}
+
+function resetPlayers() {
+    players[0].sum = 0
+    players[0].inPlay = true
+    players[0].busted = false
+    players[0].cards = []
+
+    players[1].sum = 0
+    players[1].inPlay = true
+    players[1].busted = false
+    players[1].cards = []
+}
+
+function resetTextContent() {
     sumEl.textContent = `Sum: ${players[0].sum}`
     dealerSumEl.textContent = `Sum: ${players[1].sum}`
     cardsEl.textContent = ""
     dealerCardsEl.textContent = ""
-    newCardBtn.disabled = false
-    message = ""
+}
 
+function resetCardImgs() {
     while (cardImgsEl.hasChildNodes()) {
         cardImgsEl.removeChild(cardImgsEl.firstChild)
     }
@@ -76,50 +91,57 @@ function resetGame() {
         dealerCardImgsEl.removeChild(dealerCardImgsEl.firstChild)
 }
 
-function resetPlayers() {
-    players[0].sum = 0
-    players[0].busted = false
-    players[0].cards = []
-
-    players[1].sum = 0
-    players[1].busted = false
-    players[1].cards = []
-}
-
 function mainGame() {
     if(gameOn) {
+        // when user's turn
         if( !players[1].busted ) {
-            let playerCard = playerMove(1)
-            updateBusting(1)
-            sumEl.textContent = `Sum: ${players[1].sum}`
-            displayCard(1, playerCard)
+            messageEl.textContent = "Your turn"
+            playerMove(1)
         }
         
+        // when dealer's turn
         if( !players[0].busted ) {
-            let dealerCard = playerMove(0)
-            updateBusting(0)
-            dealerSumEl.textContent = `Sum: ${players[0].sum}`
-            displayCard(0, dealerCard)
+            console.log("**dealer's turn!")
+            messageEl.textContent = "Dealer's turn"
+            playerMove(0)
         }
+
+        if(players[1].busted && !newCardBtn.disabled)
+            disableBtns(true)
 
         if( players[1].busted && players[0].busted ) {
             gameOn = false
-            disableNewCardBtn() 
+            //disableBtns(true)
+            messageEl.textContent = "Game Over!"
         }
     }
 }
 
 function playerMove(playerIndex) {
+    if(playerIndex === 0)
+        console.log("siejfowijf")
+    // get new card
     const newCard = getRandomCard()
     players[playerIndex].cards.push(newCard)
-    players[playerIndex].sum += newCard
 
-    return newCard
+    updateSum(playerIndex, newCard)
+    updateBusting(playerIndex)
+    displayCard(playerIndex, newCard)
 }
 
 function updateBusting(playerIndex) {
     if( players[playerIndex].sum >= 21 )
         players[playerIndex].busted = true
+}
+
+function updateSum(playerIndex, newCard){
+    players[playerIndex].sum += newCard
+
+    const newTextContent = `Sum: ${players[playerIndex].sum}`
+    if(playerIndex === 0)
+        dealerSumEl.textContent = newTextContent
+    else
+        sumEl.textContent = newTextContent
 }
 
 function updateBoard(newCardValue) {
@@ -134,28 +156,37 @@ function updateMessage() {
     } else if (players[1].sum === 21) {
         message = "You've got Blackjack!"
         gameOn = false
-        disableNewCardBtn()
+        disableBtns()
 
     } else {
         message = "You're out of the game!"
-        disableNewCardBtn()
+        disableBtns()
     }
 
     messageEl.textContent = message
 }
 
-function disableNewCardBtn() {
-    newCardBtn.disabled = true
+function disableBtns(disable) {
+    newCardBtn.disabled = disable
+    hitBtn.disabled = disable
 }
 
 newCardBtn.addEventListener("click", function () {
     mainGame()
 })
 
+hitBtn.addEventListener("click", function() {
+    players[1].busted = true
+    disableBtns(true)
+
+    //while(gameOn)
+        mainGame()
+})
+
+
 function findCardPath(cardNumber) {
     for(let i = 0; i < card_data.length; i++) {
         if( card_data[i].number === cardNumber ) {
-            console.log("found")
             return card_data[i].path
         }
     }
@@ -166,7 +197,6 @@ function displayCard(playerIndex, cardNumber) {
     const cardPath = findCardPath(cardNumber)
 
     if(cardPath){
-        console.log(`cardpath is:: ${cardPath}`)
         const img = document.createElement("img")
         img.src = cardPath
         img.alt = `card with value ${cardNumber}`
