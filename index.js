@@ -1,6 +1,6 @@
 ﻿//
 // Simple Blackjack Game from Scrimba JavaScript Tutorial
-// Updated: 08/01/2025
+// Updated: 08/29/2025
 //
 
 const card_data = [
@@ -37,6 +37,25 @@ const dealerSumEl = document.getElementById("dealer-sum-el")
 const dealerCardsEl = document.getElementById("dealer-cards")
 const dealerCardImgsEl = document.getElementById("dealer_card_imgs")
 
+
+startGameBtn.addEventListener("click", function () {
+    gameOn = true
+    resetGame()
+    mainGame()
+})
+
+newCardBtn.addEventListener("click", function () {
+    mainGame()
+})
+
+hitBtn.addEventListener("click", function() {
+    players[1].busted = true
+    disableBtns(true)
+
+    //while(gameOn)
+        mainGame()
+})
+
 function getRandomCard() {
     let randomNum = Math.floor( Math.random() * 13 ) + 1
 
@@ -48,12 +67,6 @@ function getRandomCard() {
     }
     else return randomNum
 }
-
-startGameBtn.addEventListener("click", function () {
-    gameOn = true
-    resetGame()
-    mainGame()
-})
 
 function resetGame() {
     resetPlayers()
@@ -98,29 +111,40 @@ function mainGame() {
             messageEl.textContent = "Your turn"
             playerMove(1)
         }
-        
+
         // when dealer's turn
         if( !players[0].busted ) {
-            console.log("**dealer's turn!")
-            messageEl.textContent = "Dealer's turn"
-            playerMove(0)
-        }
-
-        if(players[1].busted && !newCardBtn.disabled)
+            messageEl.textContent = "Dealer's turn! Please wait..."
             disableBtns(true)
 
-        if( players[1].busted && players[0].busted ) {
-            gameOn = false
-            //disableBtns(true)
-            messageEl.textContent = "Game Over!"
+            setTimeout(function(){        
+                playerMove(0)
+                checkGameOver()
+            }, 3000)
         }
+        else checkGameOver()
+    }
+}
+
+function checkGameOver() {
+    if(players[1].busted && !newCardBtn.disabled)
+        disableBtns(true)
+
+    if( players[1].busted && players[0].busted ) {
+        gameOn = false
+        //disableBtns(true)
+        messageEl.textContent = "Game Over!"
+    }
+    else{
+        messageEl.textContent = "Continue? Your turn..."
+        disableBtns(false)
     }
 }
 
 function playerMove(playerIndex) {
-    if(playerIndex === 0)
-        console.log("siejfowijf")
+    messageEl.textContent = `${players[playerIndex].player}'s turn!`
     // get new card
+
     const newCard = getRandomCard()
     players[playerIndex].cards.push(newCard)
 
@@ -170,19 +194,6 @@ function disableBtns(disable) {
     newCardBtn.disabled = disable
     hitBtn.disabled = disable
 }
-
-newCardBtn.addEventListener("click", function () {
-    mainGame()
-})
-
-hitBtn.addEventListener("click", function() {
-    players[1].busted = true
-    disableBtns(true)
-
-    //while(gameOn)
-        mainGame()
-})
-
 
 function findCardPath(cardNumber) {
     for(let i = 0; i < card_data.length; i++) {
