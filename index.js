@@ -127,15 +127,22 @@ function mainGame() {
 }
 
 function checkGameOver() {
-    if(players[1].busted && !newCardBtn.disabled)
-        disableBtns(true)
-
     if( players[1].busted && players[0].busted ) {
         gameOn = false
         //disableBtns(true)
         messageEl.textContent = "Game Over!"
     }
-    else{
+    else if(!players[1].busted && players[0].busted) {
+        if(players[0].sum === 21) {
+            disableBtns(true)
+            messageEl.textContent = ""
+        }
+    }
+    else if(players[1].busted && !players[0].busted) {
+            disableBtns(true)
+            messageEl.textContent = "Dealer Won!!! You lose!"
+    }
+    else {
         messageEl.textContent = "Continue? Your turn..."
         disableBtns(false)
     }

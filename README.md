@@ -1,6 +1,6 @@
 # Snoopy Blackjack
 
-Simple game of Blackjack but make it Snoopy themed.
+In Progress. Game of Blackjack but make it Snoopy themed.
 This is a project from the Scrimba JavaScript module.
 
 ## About
